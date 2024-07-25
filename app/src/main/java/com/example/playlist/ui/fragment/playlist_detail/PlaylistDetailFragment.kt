@@ -1,10 +1,12 @@
 package com.example.playlist.ui.fragment.playlist_detail
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.SeekBar
 import androidx.navigation.fragment.findNavController
 import com.example.playlist.R
 import com.example.playlist.databinding.FragmentPlaylistDetailBinding
@@ -40,6 +42,7 @@ class PlaylistDetailFragment :
                 mediaPlayer = MediaPlayer().apply {
                     setOnPreparedListener {
                         start()
+                        initSeekBar()
                         binding.imgPlay.visibility = View.GONE
                         binding.imgPause.visibility = View.VISIBLE
                     }
@@ -74,6 +77,23 @@ class PlaylistDetailFragment :
             }
         }
     }
+
+    private fun initSeekBar() {
+        binding.seekBar.setOnSeekBarChangeListener(@SuppressLint("AppCompatCustomView")
+        object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) mediaPlayer?.seekTo(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
+        binding.seekBar.max = mediaPlayer!!.duration
+    }
+
 
     private fun changeTrack(uri: String) {
         mediaPlayer?.reset()
